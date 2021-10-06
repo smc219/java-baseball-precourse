@@ -19,7 +19,6 @@ public class BaseballModel {
 	public BaseballModel(BaseballController baseballController) {
 		this.baseballController = baseballController;
 		this.computerGeneratedNumber = generateNumber();
-		System.out.println("hint : " + this.computerGeneratedNumber);
 	}
 
 	public boolean checkAllDifferent(int first, int second, int third) {
