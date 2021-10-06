@@ -80,7 +80,7 @@ public class BaseballModelTest {
 	@Test
 	void testGenNum() {
 		boolean used[] = new boolean[10];
-		String generatedNum = baseballModel.genNum();
+		String generatedNum = baseballModel.generateNumber();
 		for (int i = 0; i < 3; ++i)
 		{
 			int parseInt = Integer.parseInt(generatedNum.substring(i, i + 1));

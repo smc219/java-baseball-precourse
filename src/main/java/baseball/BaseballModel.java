@@ -2,93 +2,101 @@ package baseball;
 
 import nextstep.utils.Randoms;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BaseballModel {
-    private BaseballController baseballController;
-    private String computerGeneratedNumber;
-    private String userGeneratedNumber;
+	private BaseballController baseballController;
+	private String computerGeneratedNumber;
+	private String userGeneratedNumber;
+	private boolean waitingForFinished = false;
 
-    public BaseballModel() {
-        this.computerGeneratedNumber = genNum();
-    }
+	public boolean isWaitingForFinished() {
+		return waitingForFinished;
+	}
 
-    public BaseballModel(BaseballController baseballController) {
-        this.baseballController = baseballController;
-        this.computerGeneratedNumber = genNum();
-        System.out.println("hint : " + this.computerGeneratedNumber);
-    }
+	public BaseballModel() {
+		this.computerGeneratedNumber = generateNumber();
+	}
 
-    public boolean checkAllDifferent(int first, int second, int third) {
-        return (first != second && second != third && third != first);
-    }
+	public BaseballModel(BaseballController baseballController) {
+		this.baseballController = baseballController;
+		this.computerGeneratedNumber = generateNumber();
+		System.out.println("hint : " + this.computerGeneratedNumber);
+	}
 
-    private String genNum() {
-        int first = Randoms.pickNumberInRange(1, 9);
-        int second = Randoms.pickNumberInRange(1, 9);
-        int third = Randoms.pickNumberInRange(1, 9);
-        while(!checkAllDifferent(first, second, third)) {
-            first = Randoms.pickNumberInRange(1, 9);
-            second = Randoms.pickNumberInRange(1, 9);
-            third = Randoms.pickNumberInRange(1, 9);
-        };
-        return (Integer.toString(first) + Integer.toString(second) + Integer.toString(third));
-    }
+	public boolean checkAllDifferent(int first, int second, int third) {
+		return (first != second && second != third && third != first);
+	}
 
-    public void setBaseballController(BaseballController baseballController) {
-        this.baseballController = baseballController;
-    }
+	public String generateNumber() {
+		int first = Randoms.pickNumberInRange(1, 9);
+		int second = Randoms.pickNumberInRange(1, 9);
+		int third = Randoms.pickNumberInRange(1, 9);
+		while (!checkAllDifferent(first, second, third)) {
+			first = Randoms.pickNumberInRange(1, 9);
+			second = Randoms.pickNumberInRange(1, 9);
+			third = Randoms.pickNumberInRange(1, 9);
+		}
+		;
+		return (Integer.toString(first) + Integer.toString(second) + Integer.toString(third));
+	}
 
+	public void setBaseballController(BaseballController baseballController) {
+		this.baseballController = baseballController;
+	}
 
+	public String getComputerGeneratedNumber() {
+		return computerGeneratedNumber;
+	}
 
-    public String getComputerGeneratedNumber() {
-        return computerGeneratedNumber;
-    }
+	public void setComputerGeneratedNumber() {
+		computerGeneratedNumber = generateNumber();
+	}
 
-    public String getUserGeneratedNumber() {
-        return userGeneratedNumber;
-    }
+	public void setUserGeneratedNumber(String userGeneratedNumber) {
+		this.userGeneratedNumber = userGeneratedNumber;
+	}
 
-    public void setComputerGeneratedNumber() {
-        computerGeneratedNumber = genNum();
-    }
+	public int checkStrike(char num, int ix) {
+		if (num == this.getComputerGeneratedNumber().charAt(ix))
+			return 1;
+		return 0;
+	}
 
-    public void setUserGeneratedNumber(String userGeneratedNumber) {
-        this.userGeneratedNumber = userGeneratedNumber;
-    }
+	public int countStrike(String number) {
+		int cnt = 0;
+		for (int i = 0; i < 3; ++i) {
+			cnt += checkStrike(number.charAt(i), i);
+		}
+		return cnt;
+	}
 
-    public int checkStrike(char num, int ix) {
-        if (num == this.getComputerGeneratedNumber().charAt(ix)) return 1;
-        return 0;
-    }
+	public int countContains(char num) {
+		String numString = String.valueOf(num);
+		if (getComputerGeneratedNumber().contains(numString))
+			return 1;
+		return 0;
+	}
 
-    public int countStrike(String number) {
-        int cnt = 0;
-        for (int i = 0; i < 3; ++i) {
-            cnt += checkStrike(number.charAt(i), i);
-        }
-        return cnt;
-    }
+	public int countBalls(String number) {
+		int cnt = 0;
+		for (int i = 0; i < 3; ++i) {
+			cnt += countContains(number.charAt(i));
+		}
+		return cnt - countStrike(number);
+	}
 
-    public int countContains(char num) {
-        String numString = String.valueOf(num);
-        if (getComputerGeneratedNumber().contains(numString)) return 1;
-        return 0;
-    }
+	public void checkGameFinished(boolean value) {
+		waitingForFinished = value;
+	}
 
+	public void getResultFromController(String num) {
+		int strikes = countStrike(num);
+		int balls = countBalls(num);
+		if (strikes == 3) {
+			checkGameFinished(true);
+		}
 
+		baseballController.sendMessage(strikes, balls);
 
-    public int countBalls(String number) {
-        int cnt = 0;
-        for (int i = 0; i < 3; ++i) {
-            cnt += countContains(number.charAt(i));
-        }
-        return cnt - countStrike(number);
-    }
-
-    public void getResultFromController(String num) {
-
-    }
+	}
 
 }
