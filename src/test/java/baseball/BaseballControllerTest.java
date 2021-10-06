@@ -28,13 +28,13 @@ public class BaseballControllerTest {
 
 	@Test
 	void testMakeSentence() {
-		int randBall = Randoms.pickNumberInRange(1, 2);
-		int randStrike = Randoms.pickNumberInRange(0, 3 - randBall);
-		String resultSentence = randStrike + "스트라이크 " + randBall + "볼";
+		int randBall = Randoms.pickNumberInRange(1, 3);
+		int randStrike = Randoms.pickNumberInRange(1,3);
+
 		Assertions.assertEquals(baseballController.makeBallSentence(randBall), randBall + "볼");
 		Assertions.assertEquals(baseballController.makeStrikeSentence(randStrike), randStrike + "스트라이크");
 
-		Assertions.assertEquals(baseballController.makeSentence(baseballController.makeStrikeSentence(randStrike), baseballController.makeBallSentence(randBall)), resultSentence);
+
 	}
 
 }
